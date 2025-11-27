@@ -91,16 +91,9 @@ const Index = () => {
     }, 1500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name && phone) {
-      toast({
-        title: "Заявка отправлена! 🎉",
-        description: "Мы свяжемся с вами в ближайшее время",
-      });
-      setName('');
-      setPhone('');
-    }
+  const handleWhatsAppClick = () => {
+    const message = encodeURIComponent('Здравствуйте! Хочу записаться на процедуру и поучаствовать в акции "Сейф с красотой"');
+    window.open(`https://wa.me/79181352147?text=${message}`, '_blank');
   };
 
   const scrollToForm = () => {
@@ -340,41 +333,42 @@ const Index = () => {
             
             <Card className="border-2 border-primary/20 shadow-xl">
               <CardContent className="p-8 md:p-12">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-lg font-inter">Ваше имя</Label>
-                    <Input 
-                      id="name"
-                      placeholder="Введите ваше имя"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      className="text-lg py-6"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-lg font-inter">Номер телефона</Label>
-                    <Input 
-                      id="phone"
-                      type="tel"
-                      placeholder="+7 (___) ___-__-__"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required
-                      className="text-lg py-6"
-                    />
+                <div className="space-y-6">
+                  <div className="text-center mb-8">
+                    <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-6 py-3 rounded-full mb-6">
+                      <Icon name="MessageCircle" size={24} className="text-green-600" />
+                      <span className="font-inter font-medium">Быстрая запись через WhatsApp</span>
+                    </div>
                   </div>
                   
                   <Button 
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 text-white text-lg py-6 rounded-full font-inter font-medium"
+                    onClick={handleWhatsAppClick}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white text-lg py-6 rounded-full font-inter font-medium shadow-lg"
                     size="lg"
                   >
-                    Записаться и получить попытки!
-                    <Icon name="Sparkles" className="ml-2" size={20} />
+                    <Icon name="MessageCircle" className="mr-2" size={24} />
+                    Записаться через WhatsApp
                   </Button>
-                </form>
+                  
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground font-inter">
+                      Нажмите на кнопку, и мы откроем чат в WhatsApp<br />
+                      для быстрой записи на процедуру
+                    </p>
+                  </div>
+                  
+                  <div className="pt-6 border-t">
+                    <p className="text-center text-sm text-muted-foreground font-inter mb-3">
+                      Или свяжитесь с нами по телефону:
+                    </p>
+                    <a href="tel:+79181352147" className="block text-center">
+                      <Button variant="outline" size="lg" className="font-inter text-lg">
+                        <Icon name="Phone" className="mr-2" size={20} />
+                        +7 (918) 135-21-47
+                      </Button>
+                    </a>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -407,11 +401,32 @@ const Index = () => {
             <div>
               <h4 className="font-inter font-semibold mb-3">Мы в соцсетях</h4>
               <div className="flex gap-4">
-                <a href="#" className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors">
+                <a 
+                  href="https://t.me/lana_cosmetology" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors"
+                  aria-label="Telegram"
+                >
                   <Icon name="Send" size={20} />
                 </a>
-                <a href="#" className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors">
+                <a 
+                  href="https://vk.com/kosmetologiya_krd" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors"
+                  aria-label="ВКонтакте"
+                >
                   <Icon name="Share2" size={20} />
+                </a>
+                <a 
+                  href="https://wa.me/79181352147" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors"
+                  aria-label="WhatsApp"
+                >
+                  <Icon name="MessageCircle" size={20} />
                 </a>
               </div>
             </div>
@@ -467,13 +482,12 @@ const Index = () => {
               <Button 
                 onClick={() => {
                   setIsModalOpen(false);
-                  scrollToForm();
+                  handleWhatsAppClick();
                 }}
-                variant="outline"
-                className="w-full font-inter"
+                className="w-full font-inter bg-green-600 hover:bg-green-700 text-white"
               >
-                Записаться на процедуру
-                <Icon name="ArrowRight" className="ml-2" size={18} />
+                <Icon name="MessageCircle" className="mr-2" size={18} />
+                Записаться через WhatsApp
               </Button>
             </div>
           </div>
