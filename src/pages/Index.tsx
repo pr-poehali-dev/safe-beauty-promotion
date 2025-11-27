@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,61 @@ const Index = () => {
   const [code, setCode] = useState(['', '', '', '']);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [attemptsCount, setAttemptsCount] = useState(0);
+  const [timeLeft, setTimeLeft] = useState({ days: 14, hours: 5, minutes: 30, seconds: 0 });
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        } else if (prev.days > 0) {
+          return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
+        }
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+            let count = 0;
+            const target = 156;
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            const counter = setInterval(() => {
+              count += increment;
+              if (count >= target) {
+                setAttemptsCount(target);
+                clearInterval(counter);
+              } else {
+                setAttemptsCount(Math.floor(count));
+              }
+            }, 16);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasAnimated]);
 
   const handleCodeInput = (index: number, value: string) => {
     if (value.length <= 1 && /^\d*$/.test(value)) {
@@ -83,6 +137,33 @@ const Index = () => {
             Узнать подробности
             <Icon name="ChevronDown" className="ml-2" size={24} />
           </Button>
+        </div>
+      </section>
+
+      <section className="py-16 bg-primary/10">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto bg-gradient-to-r from-primary via-primary/90 to-primary text-white rounded-3xl p-8 md:p-12 shadow-2xl" ref={statsRef}>
+            <h2 className="font-cormorant text-3xl md:text-5xl font-bold text-center mb-4">Акция заканчивается через:</h2>
+            <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-3xl mx-auto mb-8">
+              {[
+                { value: timeLeft.days, label: 'Дней' },
+                { value: timeLeft.hours, label: 'Часов' },
+                { value: timeLeft.minutes, label: 'Минут' },
+                { value: timeLeft.seconds, label: 'Секунд' }
+              ].map((item, index) => (
+                <div key={index} className="text-center">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 md:p-6 mb-2">
+                    <span className="font-cormorant text-3xl md:text-5xl font-bold">{String(item.value).padStart(2, '0')}</span>
+                  </div>
+                  <p className="text-white/90 text-sm md:text-base font-inter">{item.label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="text-center border-t border-white/20 pt-6">
+              <p className="font-inter text-xl mb-2">Попыток уже разыграно:</p>
+              <p className="font-cormorant text-5xl md:text-6xl font-bold">{attemptsCount}</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -164,6 +245,51 @@ const Index = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="font-cormorant text-4xl md:text-6xl font-bold text-center mb-4 text-foreground">
+            Отзывы наших клиентов
+          </h2>
+          <p className="text-center text-muted-foreground mb-16 text-lg font-inter">
+            Узнайте, что говорят те, кто уже побывал у нас
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
+            {[
+              {
+                name: 'Анна Морозова',
+                text: 'Потрясающая атмосфера и профессиональный подход! После курса биоревитализации кожа просто сияет. Акция с сейфом добавляет азарта — обязательно попробую свою удачу!',
+                rating: 5
+              },
+              {
+                name: 'Екатерина Волкова',
+                text: 'Лана — мастер своего дела! Процедуры проходят комфортно, результат виден сразу. А акция — это просто гениально! Уже копила на процедуры, теперь ещё и шанс выиграть абонемент!',
+                rating: 5
+              },
+              {
+                name: 'Мария Соколова',
+                text: 'Хожу в студию уже год. Качество процедур на высоте, цены адекватные. Сейф с призом — отличная мотивация! Надеюсь, мне повезёт открыть его первой 😊',
+                rating: 5
+              }
+            ].map((review, index) => (
+              <Card key={index} className="border-2 hover:shadow-2xl transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex justify-center mb-4">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <Icon key={i} name="Star" size={20} className="text-primary fill-primary" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground font-inter mb-6 italic">"{review.text}"</p>
+                  <div className="text-center">
+                    <p className="font-cormorant text-xl font-semibold text-foreground">{review.name}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
