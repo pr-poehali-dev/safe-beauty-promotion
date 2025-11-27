@@ -1,17 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import HeroSection from '@/components/HeroSection';
+import TimerAndStatsSection from '@/components/TimerAndStatsSection';
+import SafeModal from '@/components/SafeModal';
+import Footer from '@/components/Footer';
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [code, setCode] = useState(['', '', '', '']);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
   const [attemptsCount, setAttemptsCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState({ days: 14, hours: 5, minutes: 30, seconds: 0 });
   const statsRef = useRef<HTMLDivElement>(null);
@@ -102,63 +101,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `url('https://cdn.poehali.dev/projects/4dc239ac-5532-4d98-8627-7ae12682aa01/files/3ef126d8-283a-4944-8a5a-654497719e4f.jpg')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.6)'
-          }}
-        />
-        
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-background z-0" />
-        
-        <div className="relative z-10 container mx-auto px-4 text-center text-white animate-fade-in">
-          <h1 className="font-cormorant text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-            Взломай сейф<br />и выиграй год<br />ухода за кожей!
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90 font-light">
-            Получи шанс открыть сейф с абонементом на премиальные<br />процедуры за каждые 5 000 рублей в нашем кабинете
-          </p>
-          <Button 
-            onClick={scrollToForm}
-            size="lg" 
-            className="bg-primary hover:bg-primary/90 text-white text-lg px-12 py-6 rounded-full shadow-2xl animate-pulse-glow font-inter font-medium"
-          >
-            Узнать подробности
-            <Icon name="ChevronDown" className="ml-2" size={24} />
-          </Button>
-        </div>
-      </section>
+      <HeroSection onScrollToForm={scrollToForm} />
 
-      <section className="py-16 bg-primary/10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto bg-gradient-to-r from-primary via-primary/90 to-primary text-white rounded-3xl p-8 md:p-12 shadow-2xl" ref={statsRef}>
-            <h2 className="font-cormorant text-3xl md:text-5xl font-bold text-center mb-4">Акция заканчивается через:</h2>
-            <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-3xl mx-auto mb-8">
-              {[
-                { value: timeLeft.days, label: 'Дней' },
-                { value: timeLeft.hours, label: 'Часов' },
-                { value: timeLeft.minutes, label: 'Минут' },
-                { value: timeLeft.seconds, label: 'Секунд' }
-              ].map((item, index) => (
-                <div key={index} className="text-center">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 md:p-6 mb-2">
-                    <span className="font-cormorant text-3xl md:text-5xl font-bold">{String(item.value).padStart(2, '0')}</span>
-                  </div>
-                  <p className="text-white/90 text-sm md:text-base font-inter">{item.label}</p>
-                </div>
-              ))}
-            </div>
-            <div className="text-center border-t border-white/20 pt-6">
-              <p className="font-inter text-xl mb-2">Попыток уже разыграно:</p>
-              <p className="font-cormorant text-5xl md:text-6xl font-bold">{attemptsCount}</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <TimerAndStatsSection 
+        timeLeft={timeLeft} 
+        attemptsCount={attemptsCount} 
+        statsRef={statsRef} 
+      />
 
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -375,124 +324,16 @@ const Index = () => {
         </div>
       </section>
 
-      <footer className="bg-foreground text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <h3 className="font-cormorant text-2xl font-bold mb-4">
-                Эстетик-студия<br />Ланы Рудневой<br />«Мой косметолог»
-              </h3>
-            </div>
-            
-            <div>
-              <h4 className="font-inter font-semibold mb-3">Контакты</h4>
-              <div className="space-y-2 text-white/80 font-inter">
-                <p className="flex items-center gap-2">
-                  <Icon name="MapPin" size={18} />
-                  г. Краснодар, ул. Рылеева 179/1
-                </p>
-                <p className="flex items-center gap-2">
-                  <Icon name="Phone" size={18} />
-                  +7 (918) 135-21-47
-                </p>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="font-inter font-semibold mb-3">Мы в соцсетях</h4>
-              <div className="flex gap-4">
-                <a 
-                  href="https://t.me/lana_cosmetology" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors"
-                  aria-label="Telegram"
-                >
-                  <Icon name="Send" size={20} />
-                </a>
-                <a 
-                  href="https://vk.com/kosmetologiya_krd" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors"
-                  aria-label="ВКонтакте"
-                >
-                  <Icon name="Share2" size={20} />
-                </a>
-                <a 
-                  href="https://wa.me/79181352147" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors"
-                  aria-label="WhatsApp"
-                >
-                  <Icon name="MessageCircle" size={20} />
-                </a>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-white/10 pt-6 text-center text-white/60 font-inter text-sm">
-            <p>© 2024 Эстетик-студия Ланы Рудневой. Все права защищены.</p>
-            <a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-cormorant text-3xl text-center">Взлом сейфа</DialogTitle>
-          </DialogHeader>
-          
-          <div className="py-8">
-            <div className="bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-600 rounded-2xl p-8 mb-6">
-              <div className="flex justify-center mb-6">
-                <Icon name="LockKeyhole" size={60} className="text-white" />
-              </div>
-              
-              <div className="flex justify-center gap-3 mb-6">
-                {code.map((digit, index) => (
-                  <Input
-                    key={index}
-                    id={`code-${index}`}
-                    type="text"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleCodeInput(index, e.target.value)}
-                    className="w-14 h-14 text-center text-2xl font-bold bg-white/90"
-                  />
-                ))}
-              </div>
-              
-              <Button 
-                onClick={handleTryCode}
-                className="w-full bg-white text-amber-600 hover:bg-white/90 font-inter font-semibold"
-                disabled={code.some(d => !d)}
-              >
-                Попробовать код
-              </Button>
-            </div>
-            
-            <div className="bg-muted rounded-xl p-6 text-center">
-              <p className="text-sm text-muted-foreground font-inter mb-4">
-                Это демо-режим для примера.<br />
-                Чтобы получить настоящие попытки, запишитесь на процедуры!
-              </p>
-              <Button 
-                onClick={() => {
-                  setIsModalOpen(false);
-                  handleWhatsAppClick();
-                }}
-                className="w-full font-inter bg-green-600 hover:bg-green-700 text-white"
-              >
-                <Icon name="MessageCircle" className="mr-2" size={18} />
-                Записаться через WhatsApp
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <SafeModal 
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        code={code}
+        onCodeInput={handleCodeInput}
+        onTryCode={handleTryCode}
+        onWhatsAppClick={handleWhatsAppClick}
+      />
     </div>
   );
 };
