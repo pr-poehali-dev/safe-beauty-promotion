@@ -283,26 +283,34 @@ const Index = () => {
             <Card className="border-2 border-primary/20 shadow-xl">
               <CardContent className="p-8 md:p-12">
                 <div className="space-y-6">
-                  <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-6 py-3 rounded-full mb-6">
-                      <Icon name="MessageCircle" size={24} className="text-green-600" />
-                      <span className="font-inter font-medium">Быстрая запись через WhatsApp</span>
-                    </div>
+                  <div className="text-center mb-4">
+                    <h3 className="font-inter font-semibold text-lg text-foreground mb-2">Выберите удобный способ записи:</h3>
                   </div>
                   
-                  <Button 
-                    onClick={handleWhatsAppClick}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white text-lg py-6 rounded-full font-inter font-medium shadow-lg"
-                    size="lg"
-                  >
-                    <Icon name="MessageCircle" className="mr-2" size={24} />
-                    Записаться через WhatsApp
-                  </Button>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Button 
+                      onClick={handleWhatsAppClick}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white text-lg py-6 rounded-xl font-inter font-medium shadow-lg"
+                      size="lg"
+                    >
+                      <Icon name="MessageCircle" className="mr-2" size={24} />
+                      WhatsApp
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => window.open('https://t.me/lana_kosmetolog_krd', '_blank')}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg py-6 rounded-xl font-inter font-medium shadow-lg"
+                      size="lg"
+                    >
+                      <Icon name="Send" className="mr-2" size={24} />
+                      Telegram
+                    </Button>
+                  </div>
                   
                   <div className="text-center">
                     <p className="text-sm text-muted-foreground font-inter">
-                      Нажмите на кнопку, и мы откроем чат в WhatsApp<br />
-                      для быстрой записи на процедуру
+                      Нажмите на кнопку для быстрой записи на процедуру<br />
+                      через WhatsApp или Telegram
                     </p>
                   </div>
                   
